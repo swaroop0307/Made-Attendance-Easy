@@ -29,18 +29,29 @@ def teacher_login(username, password):
     if response.data:
         teacher = response.data[0]
         if check_pass(password, teacher['password']):
+            # Ensure 'teacher_id' key exists (Supabase may return primary key as 'id')
+            if 'teacher_id' not in teacher and 'id' in teacher:
+                teacher['teacher_id'] = teacher['id']
             return teacher
     return None
 
 
 def get_all_students():
     response = supabase.table('students').select("*").execute()
-    return response.data
+    students = response.data
+    for s in students:
+        if 'student_id' not in s and 'id' in s:
+            s['student_id'] = s['id']
+    return students
 
 def create_student(new_name, face_embedding=None, voice_embedding=None):
-    data = {'name': new_name, 'face_embedding':face_embedding, "voice_embedding": voice_embedding}
+    data = {'name': new_name, 'face_embedding': face_embedding, "voice_embedding": voice_embedding}
     response = supabase.table('students').insert(data).execute()
-    return response.data
+    students = response.data
+    for s in students:
+        if 'student_id' not in s and 'id' in s:
+            s['student_id'] = s['id']
+    return students
 
 
 def create_subject(subject_code, name, section, teacher_id):
