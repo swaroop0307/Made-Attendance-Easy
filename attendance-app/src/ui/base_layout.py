@@ -81,9 +81,13 @@ def style_base_layout():
                 max-width: 1020px !important;
             }
 
-            *:not(.material-symbols-rounded):not(.stIcon) {
-                font-family: 'Plus Jakarta Sans', -apple-system, sans-serif !important;
+            html, body, p, label, input, textarea, select, option, .stMarkdown, .stText {
+                font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
                 letter-spacing: -0.01em;
+            }
+
+            [data-testid="stIconMaterial"], [data-testid="stIcon"], .material-symbols-rounded, .material-symbols-outlined, .material-symbols-sharp {
+                font-family: 'Material Symbols Rounded', 'Material Symbols Outlined', 'Material Icons' !important;
             }
 
             h1, h2, h3 {
@@ -104,8 +108,9 @@ def style_base_layout():
                 margin-bottom: 1rem !important;
             }
 
-            /* Modern pill & glow buttons */
-            button, button[kind="primary"] {
+            /* Modern pill & glow buttons (scoped specifically to st.button) */
+            div.stButton > button {
+                font-family: 'Plus Jakarta Sans', -apple-system, sans-serif !important;
                 border-radius: 9999px !important;
                 background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
                 color: #ffffff !important;
@@ -116,7 +121,7 @@ def style_base_layout():
                 transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
             }
 
-            button[kind="secondary"] {
+            div.stButton > button[kind="secondary"] {
                 border-radius: 9999px !important;
                 background: linear-gradient(135deg, #ec4899 0%, #db2777 100%) !important;
                 color: #ffffff !important;
@@ -127,7 +132,7 @@ def style_base_layout():
                 transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
             }
 
-            button[kind="tertiary"] {
+            div.stButton > button[kind="tertiary"] {
                 border-radius: 9999px !important;
                 background: #0f172a !important;
                 color: #f8fafc !important;
@@ -137,13 +142,13 @@ def style_base_layout():
                 transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
             }
 
-            button:hover {
+            div.stButton > button:hover {
                 transform: translateY(-2px) scale(1.02) !important;
                 filter: brightness(1.08) !important;
                 box-shadow: 0 8px 20px rgba(99, 102, 241, 0.45) !important;
             }
 
-            button:active {
+            div.stButton > button:active {
                 transform: translateY(0) scale(0.98) !important;
             }
 
