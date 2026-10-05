@@ -10,7 +10,6 @@ from src.components.dialog_create_subject import create_subject_dialog
 from src.components.dialog_share_subject import share_subject_dialog
 from src.components.dialog_add_photo import add_photos_dialog
 
-from src.pipelines.face_pipeline import predict_attendance
 from src.components.dialog_attendance_results import attendance_result_dialog
 import numpy as np
 
@@ -140,6 +139,11 @@ def teacher_tab_take_attendance():
         
         if st.button('Run Face Analysis', width='stretch', type='secondary', disabled=not has_photos):
             with st.spinner('Deep scanning classroom photos...'):
+                try:
+                    from src.pipelines.face_pipeline import predict_attendance
+                except Exception as e:
+                    st.error(f"Face recognition model failed to load: {e}")
+                    st.stop()
                 all_detected_ids = {}
 
                 for idx, img in enumerate(st.session_state.attendance_images):
