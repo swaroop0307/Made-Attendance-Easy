@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.env
+.venv/
+venv/
+ENV/
+
+# Streamlit secrets (NEVER push your API keys to GitHub!)
+.streamlit/secrets.toml
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
