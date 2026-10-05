@@ -15,15 +15,17 @@ def auto_enroll_dialog(subject_code):
         st.error('Subject Code not found!')
         if st.button('Close'):
             st.query_params.clear()
+            st.session_state.pop('pending_join_code', None)
             st.rerun()
         return
     subject = res.data[0]
 
     check = supabase.table('subject_students').select('*').eq('subject_id', subject['subject_id']).eq('student_id', student_id).execute()
     if check.data:
-        st.info('Youre already enrolled!')
+        st.info('You are already enrolled in this subject!')
         if st.button('Got it!'):
             st.query_params.clear()
+            st.session_state.pop('pending_join_code', None)
             st.rerun()
         return
     st.markdown(f'Would you like to enroll in **{subject['name']}**?')
@@ -33,12 +35,14 @@ def auto_enroll_dialog(subject_code):
     with col1:
         if st.button('No thanks'):
             st.query_params.clear()
+            st.session_state.pop('pending_join_code', None)
             st.rerun()
     with col2:
-        if st.button('Yes enroll now!', type='primary', width='stretch'):
+        if st.button('Yes, enroll now!', type='primary', width='stretch'):
             enroll_student_to_subject(student_id, subject['subject_id'])
-            st.success('Joined succesfully!')
+            st.success('Joined successfully!')
             st.query_params.clear()
+            st.session_state.pop('pending_join_code', None)
             time.sleep(2)
             st.rerun()
 
