@@ -89,23 +89,37 @@ def  unenroll_student_to_subject(student_id, subject_id):
     response= supabase.table('subject_students').delete().eq('student_id', student_id).eq('subject_id', subject_id).execute()
     return response.data
 
-
+def _normalize_subject(sub):
+    # Supabase returns the primary key as 'id'; the app expects 'subject_id'
+    if isinstance(sub, dict) and 'subject_id' not in sub and 'id' in sub:
+        sub['subject_id'] = sub['id']
+    return sub
 
 def get_student_subjects(student_id):
     response = supabase.table('subject_students').select('*, subjects(*)').eq('student_id', student_id).execute()
-    return response.data
+    rows = response.data
+    for row in rows:
+        _normalize_subject(row.get('subjects'))
+    return rows
 
 
 def get_student_attendance(student_id):
     response = supabase.table('attendance_logs').select('*, subjects(*)').eq('student_id', student_id).execute()
-    return response.data
+    rows = response.data
+    for row in rows:
+        _normalize_subject(row.get('subjects'))
+    return rows
 
 
 def create_attendance(logs):
     response = supabase.table('attendance_logs').insert(logs).execute()
     return response.data
 
+
 def get_attendance_for_teacher(teacher_id):
     response = supabase.table('attendance_logs').select("*, subjects!inner(*)").eq('subjects.teacher_id', teacher_id).execute()
-    return response.data
+    rows = response.data
+    for row in rows:
+        _normalize_subject(row.get('subjects'))
+    return rows
 
