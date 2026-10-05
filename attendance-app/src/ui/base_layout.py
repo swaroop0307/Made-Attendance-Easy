@@ -81,7 +81,7 @@ def style_base_layout():
                 max-width: 1020px !important;
             }
 
-            * {
+            *:not(.material-symbols-rounded):not(.stIcon) {
                 font-family: 'Plus Jakarta Sans', -apple-system, sans-serif !important;
                 letter-spacing: -0.01em;
             }
