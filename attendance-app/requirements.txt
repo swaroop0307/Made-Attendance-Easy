@@ -2,10 +2,11 @@ streamlit
 numpy
 pandas
 
-# FACE RECOGNITION — pure-python, no C compilation
+# FACE RECOGNITION
 scikit-learn
-deepface
-tensorflow-cpu
+deepface==0.0.93
+tensorflow-cpu==2.15.1
+tf-keras
 
 # DATABASE
 supabase
@@ -15,6 +16,6 @@ bcrypt
 segno
 pillow
 
-# AUDIO — librosa only (no webrtcvad/resemblyzer which need C compilation)
+# AUDIO
 librosa
 soundfile
