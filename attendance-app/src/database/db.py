@@ -2,7 +2,6 @@ from src.database.config import supabase
 import bcrypt
 
 
-
 def hash_pass(pwd):
     return bcrypt.hashpw(pwd.encode(), bcrypt.gensalt()).decode()
 
@@ -10,16 +9,28 @@ def check_pass(pwd, hashed):
     return bcrypt.checkpw(pwd.encode(), hashed.encode())
 
 
+def _normalize_subject(sub):
+    # Supabase returns the primary key as 'id'; the app expects 'subject_id'
+    if isinstance(sub, dict) and 'subject_id' not in sub and 'id' in sub:
+        sub['subject_id'] = sub['id']
+    return sub
+
+
+def _normalize_student(student):
+    # Supabase returns the primary key as 'id'; the app expects 'student_id'
+    if isinstance(student, dict) and 'student_id' not in student and 'id' in student:
+        student['student_id'] = student['id']
+    return student
+
+
 def check_teacher_exists(username):
     # Check for unique username, returns false when username is already taken
     response = supabase.table("teachers").select("username").eq("username", username).execute()
-    return len(response.data) > 0 
-
+    return len(response.data) > 0
 
 
 def create_teacher(username, password, name):
-
-    data = { "username" : username, "password": hash_pass(password), "name": name}
+    data = {"username": username, "password": hash_pass(password), "name": name}
     response = supabase.table("teachers").insert(data).execute()
     return response.data
 
@@ -40,17 +51,16 @@ def get_all_students():
     response = supabase.table('students').select("*").execute()
     students = response.data
     for s in students:
-        if 'student_id' not in s and 'id' in s:
-            s['student_id'] = s['id']
+        _normalize_student(s)
     return students
+
 
 def create_student(new_name, face_embedding=None, voice_embedding=None):
     data = {'name': new_name, 'face_embedding': face_embedding, "voice_embedding": voice_embedding}
     response = supabase.table('students').insert(data).execute()
     students = response.data
     for s in students:
-        if 'student_id' not in s and 'id' in s:
-            s['student_id'] = s['id']
+        _normalize_student(s)
     return students
 
 
@@ -59,41 +69,34 @@ def create_subject(subject_code, name, section, teacher_id):
     response = supabase.table("subjects").insert(data).execute()
     return response.data
 
+
 def get_teacher_subjects(teacher_id):
     response = supabase.table('subjects').select("*, subject_students(count), attendance_logs(timestamp)").eq("teacher_id", teacher_id).execute()
     subjects = response.data
 
-
     for sub in subjects:
-        if 'subject_id' not in sub and 'id' in sub:
-            sub['subject_id'] = sub['id']
+        _normalize_subject(sub)
         sub['total_students'] = sub.get("subject_students", [{}])[0].get('count', 0) if sub.get('subject_students') else 0
         attendance = sub.get('attendance_logs', [])
         unique_sessions = len(set(log['timestamp'] for log in attendance))
         sub['total_classes'] = unique_sessions
 
-
-        sub.pop('subject_student', None)
+        sub.pop('subject_students', None)
         sub.pop('attendance_logs', None)
 
     return subjects
 
 
-def  enroll_student_to_subject(student_id, subject_id):
+def enroll_student_to_subject(student_id, subject_id):
     data = {'student_id': student_id, "subject_id": subject_id}
-    response= supabase.table('subject_students').insert(data).execute()
+    response = supabase.table('subject_students').insert(data).execute()
     return response.data
 
 
-def  unenroll_student_to_subject(student_id, subject_id):
-    response= supabase.table('subject_students').delete().eq('student_id', student_id).eq('subject_id', subject_id).execute()
+def unenroll_student_to_subject(student_id, subject_id):
+    response = supabase.table('subject_students').delete().eq('student_id', student_id).eq('subject_id', subject_id).execute()
     return response.data
 
-def _normalize_subject(sub):
-    # Supabase returns the primary key as 'id'; the app expects 'subject_id'
-    if isinstance(sub, dict) and 'subject_id' not in sub and 'id' in sub:
-        sub['subject_id'] = sub['id']
-    return sub
 
 def get_student_subjects(student_id):
     response = supabase.table('subject_students').select('*, subjects(*)').eq('student_id', student_id).execute()
@@ -123,3 +126,10 @@ def get_attendance_for_teacher(teacher_id):
         _normalize_subject(row.get('subjects'))
     return rows
 
+
+def get_enrolled_students(subject_id):
+    response = supabase.table('subject_students').select("*, students(*)").eq('subject_id', subject_id).execute()
+    rows = response.data
+    for row in rows:
+        _normalize_student(row.get('students'))
+    return rows
