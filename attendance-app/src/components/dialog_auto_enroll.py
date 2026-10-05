@@ -28,7 +28,7 @@ def auto_enroll_dialog(subject_code):
             st.session_state.pop('pending_join_code', None)
             st.rerun()
         return
-    st.markdown(f'Would you like to enroll in **{subject['name']}**?')
+    st.markdown(f"Would you like to enroll in **{subject['name']}**?")
 
     col1, col2 = st.columns(2)
 
