@@ -5,8 +5,6 @@ from src.screens.home_screen import home_screen
 from src.screens.teacher_screen import teacher_screen
 from src.screens.student_screen import student_screen
 
-from src.components.dialog_auto_enroll import auto_enroll_dialog
-
 def main():
     st.set_page_config(
         page_title='SnapClass - Making Attendance faster using AI',
@@ -31,13 +29,6 @@ def main():
 
         case 'student':
             student_screen()
-            # After student_screen renders, show enrollment dialog if student is logged in
-            if (
-                st.session_state.get('is_logged_in')
-                and st.session_state.get('user_role') == 'student'
-                and st.session_state.get('pending_join_code')
-            ):
-                auto_enroll_dialog(st.session_state['pending_join_code'])
 
         case None:
             home_screen()
