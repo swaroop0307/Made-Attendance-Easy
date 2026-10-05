@@ -3,11 +3,10 @@ streamlit
 numpy
 pandas
 
-# FACE RECOGNITION
+# FACE RECOGNITION (pure-python, no native compilation needed)
 scikit-learn
-dlib==19.24.2
-face-recognition-models
-setuptools<70.0.0
+deepface
+tf-keras
 
 supabase
 bcrypt
