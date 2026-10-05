@@ -1,18 +1,20 @@
 streamlit
-# Utilities
 numpy
 pandas
 
-# FACE RECOGNITION (pure-python, no native compilation needed)
+# FACE RECOGNITION — pure-python, no C compilation
 scikit-learn
 deepface
-tf-keras
+tensorflow-cpu
 
+# DATABASE
 supabase
 bcrypt
 
+# UTILS
 segno
 pillow
 
+# AUDIO — librosa only (no webrtcvad/resemblyzer which need C compilation)
 librosa
-resemblyzer
+soundfile
