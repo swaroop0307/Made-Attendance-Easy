@@ -9,6 +9,7 @@ from src.database.db import get_all_students, create_student, get_student_subjec
 import time
 
 from src.components.dialog_enroll import enroll_dialog
+from src.components.dialog_update_face import update_face_dialog
 from src.components.subject_card import subject_card
 
 
@@ -24,11 +25,16 @@ def student_dashboard():
         header_dashboard()
     with c2:
         st.subheader(f"Welcome, {student_data['name']} 👋")
-        if st.button("Logout", type='secondary', key='loginbackbtn', shortcut="control+backspace"):
-            st.session_state['is_logged_in'] = False
-            del st.session_state.student_data
-            st.session_state.pop('pending_join_code', None)
-            st.rerun()
+        sub_c1, sub_c2 = st.columns(2)
+        with sub_c1:
+            if st.button("📷 Update FaceID", type='secondary', width='stretch'):
+                update_face_dialog(student_id)
+        with sub_c2:
+            if st.button("Logout", type='secondary', key='loginbackbtn', shortcut="control+backspace", width='stretch'):
+                st.session_state['is_logged_in'] = False
+                del st.session_state.student_data
+                st.session_state.pop('pending_join_code', None)
+                st.rerun()
 
     st.space()
 

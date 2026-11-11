@@ -133,3 +133,14 @@ def get_enrolled_students(subject_id):
     for row in rows:
         _normalize_student(row.get('students'))
     return rows
+
+
+def update_student_face_embedding(student_id, face_embedding):
+    data = {'face_embedding': face_embedding}
+    response = supabase.table('students').update(data).eq('id', int(student_id)).execute()
+    students = response.data
+    if students:
+        for s in students:
+            _normalize_student(s)
+    return students
+
