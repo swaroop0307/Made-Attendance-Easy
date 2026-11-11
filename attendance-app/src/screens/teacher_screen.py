@@ -145,16 +145,16 @@ def teacher_tab_take_attendance():
                     st.error(f"Face recognition model failed to load: {e}")
                     st.stop()
                 all_detected_ids = {}
+                total_faces_found = 0
 
                 for idx, img in enumerate(st.session_state.attendance_images):
                     img_np = np.array(img.convert('RGB'))
-                    detected, _, _ = predict_attendance(img_np)
-
+                    detected, _, num_faces = predict_attendance(img_np)
+                    total_faces_found += num_faces
 
                     if detected:
                         for sid in detected.keys():
                             student_id = int(sid)
-
                             all_detected_ids.setdefault(student_id, []).append(f"Photo {idx+1}")
 
                 enrolled_students = get_enrolled_students(selected_subject_id)
